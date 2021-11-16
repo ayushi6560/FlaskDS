@@ -2,7 +2,7 @@ from sqlite3 import Connection as SQLite3Connection
 from datetime import datetime
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
-from flask import Flask,request,jsonify
+from flask import Flask, json,request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 import linked_list
 
@@ -35,7 +35,7 @@ class User(db.Model):
     email = db.Column(db.String(50))
     address = db.Column(db.String(200))
     phone = db.Column(db.String(50))
-    posts = db.relationship("BlogPost")
+    posts = db.relationship("BlogPost", cascade= "all, delete")
 
 
 class BlogPost(db.Model):
@@ -122,7 +122,10 @@ def get_one_user(user_id):
 
 @app.route("/user/<user_id>",methods=["DELETE"])
 def delete_user(user_id):
-    pass 
+    user = User.query.filter_by(id = "user_id")
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({}), 200
 
 @app.route("/blogpost/<user_id>",methods=["POST"])
 def create_blog_post(user_id):

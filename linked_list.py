@@ -66,7 +66,8 @@ class LinkedList:
         node = self.head
         
         while node:
-            if node.data["id"] == user_id:
+            if node.data["id"] == int(user_id):
+                print(node.data)
                 return node.data
 
             node = node.next_node
