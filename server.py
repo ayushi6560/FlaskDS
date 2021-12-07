@@ -6,6 +6,8 @@ from flask import Flask, json,request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 import linked_list
 import hash_table
+import random
+import binary_search_tree
 
 
 # app 
@@ -158,9 +160,30 @@ def create_blog_post(user_id):
    
     
 
-@app.route("/user/<user_id>",methods=["GET"])
-def get_all_blog_post(user_id):
-    pass 
+@app.route("/blogpost/<blogpost_id>",methods=["GET"])
+def get_one_blog_post(blogpost_id):
+    
+    blogposts = BlogPost.query.all()
+    random.shuffle(blogposts)
+
+    bst = binary_search_tree.BinarySearchTree()
+
+    for post in blogposts:
+
+        bst.insert({
+            "id" : post.id,
+            "title" : post.title,
+            "body" : post.body,
+            "user_id" : post.user_id,
+
+        })
+             
+    post = bst.search(blogpost_id)
+
+    if not post:
+        return jsonify({"message":"post not found"}),200
+
+    return jsonify(post)
 
 @app.route("/blogpost/<blog_post_id>",methods=["GET"])
 def get_one_blog_post(blog_post_id):
